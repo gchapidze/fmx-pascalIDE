@@ -1,9 +1,9 @@
-program Project1;
+program PascalIDE;
 
 uses
   System.StartUpCopy,
   FMX.Forms,
-  Unit1 in 'Unit1.pas' {Form1},
+  Controller in 'Controller.pas' {Form1},
   FontManager in 'FontManager.pas',
   FileManager in 'FileManager.pas';
 

@@ -78,7 +78,7 @@
 {$WARN XML_NO_PARM ON}
 {$WARN XML_NO_MATCHING_PARM ON}
 {$WARN IMMUTABLE_STRINGS OFF}
-unit Unit1;
+unit Controller;
 
 interface
 
