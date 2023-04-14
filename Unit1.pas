@@ -89,7 +89,8 @@ uses
   FMX.Memo.Types, FMX.Controls.Presentation, FMX.ScrollBox, FMX.Memo,
   FMX.StdCtrls, System.Actions, FMX.ActnList, FMX.ListView.Types,
   FMX.ListView.Appearances, FMX.ListView.Adapters.Base, FMX.ListView,
-  FMX.Layouts, FMX.ListBox, FontManager, System.IOUtils, FileManager;
+  FMX.Layouts, FMX.ListBox, FontManager, System.IOUtils, FileManager,
+  DosCommand;
 
 type
   TForm1 = class(TForm)
@@ -106,6 +107,8 @@ type
     SaveCheckBox: TCheckBox;
     actSave: TAction;
     SaveBtn: TButton;
+    DosCommand: TDosCommand;
+    RunBtn: TButton;
     procedure SetUpFonts;
     procedure actOpenExecute(Sender: TObject);
     procedure FontOptionsChange(Sender: TObject);
@@ -117,9 +120,11 @@ type
     procedure SaveCheckBoxMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
     procedure SaveCheckBoxClick(Sender: TObject);
+    procedure RunBtnClick(Sender: TObject);
   private
     { Private declarations }
     procedure Exec(APasFile: String);
+    procedure ExecAndRun(APasFile: String);
   public
     { Public declarations }
   end;
@@ -178,7 +183,25 @@ end;
 
 procedure TForm1.Exec(APasFile: String);
 begin
+  actSaveExecute(Self);
+  if not SourceCodeFile.IsEmpty then
+  begin
+    MemoCompilerEditor.Lines.Clear;
+    DosCommand.CommandLine := 'cmd.exe /c fpc ' + SourceCodeFile;
+    DosCommand.OutputLines := MemoCompilerEditor.Lines;
+    DosCommand.Execute;
+    MemoCompilerEditor.Lines := DosCommand.Lines;
+  end;
+end;
 
+procedure TForm1.ExecAndRun(APasFile: String);
+begin
+  actSaveExecute(Self);
+  if not SourceCodeFile.IsEmpty then
+  begin
+    Exec(APasFile);
+    // TODO Execure Generated .exe file and append on MemoCompilerEditor
+  end;
 end;
 
 procedure TForm1.FontOptionsChange(Sender: TObject);
@@ -201,6 +224,11 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   SetUpFonts;
   MemoCompilerEditor.Enabled := False;
+end;
+
+procedure TForm1.RunBtnClick(Sender: TObject);
+begin
+  ExecAndRun(SourceCodeFile);
 end;
 
 procedure TForm1.SetUpFonts;

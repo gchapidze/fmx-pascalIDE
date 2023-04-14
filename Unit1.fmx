@@ -23214,7 +23214,7 @@ object Form1: TForm1
     Action = actCompile
     Enabled = True
     ImageIndex = -1
-    Position.X = 552.000000000000000000
+    Position.X = 464.000000000000000000
     TabOrder = 8
   end
   object MemoCompilerEditor: TMemo
@@ -23229,9 +23229,12 @@ object Form1: TForm1
     Viewport.Height = 149.000000000000000000
   end
   object SaveCheckBox: TCheckBox
-    Position.X = 400.000000000000000000
+    Position.X = 368.000000000000000000
+    Size.Width = 97.000000000000000000
+    Size.Height = 19.000000000000000000
+    Size.PlatformDefault = False
     TabOrder = 10
-    Text = 'Save on close'
+    Text = 'SaveOnClose'
     OnClick = SaveCheckBoxClick
     OnMouseDown = SaveCheckBoxMouseDown
   end
@@ -23239,8 +23242,14 @@ object Form1: TForm1
     Action = actSave
     Enabled = True
     ImageIndex = -1
-    Position.X = 304.000000000000000000
+    Position.X = 288.000000000000000000
     TabOrder = 11
+  end
+  object RunBtn: TButton
+    Position.X = 552.000000000000000000
+    TabOrder = 12
+    Text = 'Run'
+    OnClick = RunBtnClick
   end
   object ActionList: TActionList
     Left = 520
@@ -23260,5 +23269,12 @@ object Form1: TForm1
       Text = 'Save'
       OnExecute = actSaveExecute
     end
+  end
+  object DosCommand: TDosCommand
+    InputToOutput = False
+    MaxTimeAfterBeginning = 0
+    MaxTimeAfterLastOutput = 0
+    Left = 520
+    Top = 96
   end
 end
