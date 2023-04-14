@@ -109,6 +109,7 @@ type
     SaveBtn: TButton;
     DosCommand: TDosCommand;
     RunBtn: TButton;
+    DosCommand1: TDosCommand;
     procedure SetUpFonts;
     procedure actOpenExecute(Sender: TObject);
     procedure FontOptionsChange(Sender: TObject);
@@ -196,11 +197,17 @@ end;
 
 procedure TForm1.ExecAndRun(APasFile: String);
 begin
+  MemoCompilerEditor.Lines.Clear;
   actSaveExecute(Self);
   if not SourceCodeFile.IsEmpty then
   begin
     Exec(APasFile);
     // TODO Execure Generated .exe file and append on MemoCompilerEditor
+    DosCommand1.CommandLine := 'cmd.exe /c ' + SourceCodeFile.Substring(0,
+      SourceCodeFile.IndexOf('.')) + '.exe';
+    DosCommand1.OutputLines := MemoCompilerEditor.Lines;
+    DosCommand1.Execute;
+    MemoCompilerEditor.Lines := DosCommand1.Lines;
   end;
 end;
 
@@ -223,7 +230,13 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   SetUpFonts;
-  MemoCompilerEditor.Enabled := False;
+  MemoCompilerEditor.ReadOnly := True;
+
+  var
+  CompilerFont := TFont.Create;
+  CompilerFont.SetSettings('Segoe UI', 12, TFontStyleExt.Default);
+  MemoCompilerEditor.TextSettings.Font := CompilerFont;
+  MemoCompilerEditor.TextSettings.FontColor := TAlphaColorRec.Chartreuse;
 end;
 
 procedure TForm1.RunBtnClick(Sender: TObject);
