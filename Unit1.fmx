@@ -9,6 +9,7 @@ object Form1: TForm1
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
+  OnClose = FormClose
   DesignerMasterStyle = 0
   object OpenBtn: TButton
     Action = actOpen
@@ -23227,6 +23228,20 @@ object Form1: TForm1
     Viewport.Width = 629.000000000000000000
     Viewport.Height = 149.000000000000000000
   end
+  object SaveCheckBox: TCheckBox
+    Position.X = 400.000000000000000000
+    TabOrder = 10
+    Text = 'Save on close'
+    OnClick = SaveCheckBoxClick
+    OnMouseDown = SaveCheckBoxMouseDown
+  end
+  object SaveBtn: TButton
+    Action = actSave
+    Enabled = True
+    ImageIndex = -1
+    Position.X = 304.000000000000000000
+    TabOrder = 11
+  end
   object ActionList: TActionList
     Left = 520
     Top = 48
@@ -23239,6 +23254,11 @@ object Form1: TForm1
       Category = 'Compilation'
       Text = 'Compile'
       OnExecute = actCompileExecute
+    end
+    object actSave: TAction
+      Category = 'FormClose'
+      Text = 'Save'
+      OnExecute = actSaveExecute
     end
   end
 end

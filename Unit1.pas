@@ -103,12 +103,20 @@ type
     CompileBtn: TButton;
     actCompile: TAction;
     MemoCompilerEditor: TMemo;
+    SaveCheckBox: TCheckBox;
+    actSave: TAction;
+    SaveBtn: TButton;
     procedure SetUpFonts;
     procedure actOpenExecute(Sender: TObject);
     procedure FontOptionsChange(Sender: TObject);
     procedure FontSizeOptionsChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actCompileExecute(Sender: TObject);
+    procedure actSaveExecute(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure SaveCheckBoxMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Single);
+    procedure SaveCheckBoxClick(Sender: TObject);
   private
     { Private declarations }
     procedure Exec(APasFile: String);
@@ -119,7 +127,7 @@ type
 var
   Form1: TForm1;
   FFontManager: IDEFont<String>;
-  FileName: String;
+  SourceCodeFile: String;
 
 implementation
 
@@ -127,14 +135,7 @@ implementation
 
 procedure TForm1.actCompileExecute(Sender: TObject);
 begin
-  if not FileName.IsEmpty then
-  begin
-    var
-    PascalFile := FileName.Substring(0, FileName.IndexOf('.')) + '.pas';
-    TFiles.Copy(FileName, PascalFile);
-
-    Exec(PascalFile);
-  end;
+  Exec(SourceCodeFile);
 end;
 
 procedure TForm1.actOpenExecute(Sender: TObject);
@@ -143,19 +144,36 @@ begin
   FileDialog := TOpenDialog.Create(nil);
   if FileDialog.Execute then
   begin
-    var
-    OpenedFile := FileDialog.FileName;
-
-    FileName := OpenedFile;
+    SourceCodeFile := FileDialog.FileName;
 
     var
     Pipe := TStringList.Create;
-    Pipe.LoadFromFile(OpenedFile);
+    Pipe.LoadFromFile(SourceCodeFile);
     MemoSourceCodeEditor.Text := Pipe.Text;
 
     Pipe.Free;
     FileDialog.Free;
   end;
+end;
+
+procedure TForm1.actSaveExecute(Sender: TObject);
+begin
+  if not SourceCodeFile.IsEmpty then
+    TFiles.Save(MemoSourceCodeEditor.Text, SourceCodeFile);
+end;
+
+procedure TForm1.SaveCheckBoxClick(Sender: TObject);
+begin
+  if SaveCheckBox.IsChecked then
+    SaveCheckBox.IsChecked := False
+  else
+    SaveCheckBox.IsChecked := True;
+end;
+
+procedure TForm1.SaveCheckBoxMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+  SaveCheckBoxClick(Self);
 end;
 
 procedure TForm1.Exec(APasFile: String);
@@ -171,6 +189,12 @@ end;
 procedure TForm1.FontSizeOptionsChange(Sender: TObject);
 begin
   MemoSourceCodeEditor.Font.Size := FontSizeOptions.Selected.Text.ToSingle;
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if SaveCheckBox.IsChecked then
+    actSaveExecute(Self);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
